@@ -2,15 +2,29 @@
 
 == Build
 
-The graphical version requires SDL 1.2 development headers. To build
-the graphical version:
+The graphical version requires SDL 1.2 development headers. In Debian
+/ Ubuntu, install dependencies as shown below.
 
 ------
-make sdl-config
-make
+# apt-get install libsdl1.2-dev
 ------
 
-The terminal version requires ncurses. To build the terminal version:
+
+To build the graphical version:
+
+------
+$ make sdl-config
+$ make
+------
+
+The terminal version requires ncurses development headers. In Debian /
+Ubuntu, install dependencies as shown below.
+
+------
+# apt-get install libncurses5-dev
+------
+
+To build the terminal version:
 
 ------
 make ncurses-config
