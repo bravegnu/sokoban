@@ -1,16 +1,17 @@
 CPPFLAGS = -DLOG_USE_COLOR
-objs = main.o game-engine.o level-parser.o world.o log.o
+objs = src/main.o src/game-engine.o src/level-parser.o src/world.o src/log.o
 
 -include .config
 
-all: check-config main
+all: check-config src/main
+	cp src/main sokoban
 
 help:
 	@echo 'Usage:'
 	@echo '    $ make sdl-config or make ncurses-config'
 	@echo '    $ make'
 
-main: $(objs)
+src/main: $(objs)
 
 check-config:
 	@test -e ".config" || (echo "*** Source tree not configured! ***"; exit 1)
@@ -27,7 +28,8 @@ distclean: clean
 	rm -f game.log
 
 clean:
-	rm -f *.o
-	rm -f main
+	rm -f src/*.o
+	rm -f src/main
+	rm -f sokoban
 
 
