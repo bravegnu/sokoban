@@ -9,6 +9,9 @@
 #include <error.h>
 #include <errno.h>
 
+/*
+ * Runs game loop for one level.
+ */
 static bool play_level(struct view *view, struct world *world_init)
 {
 	struct world world;
@@ -48,6 +51,9 @@ static bool play_level(struct view *view, struct world *world_init)
 	return true;
 }
 
+/*
+ * Destroys the UI and terminates, with message.
+ */
 static void panic(struct view *view, char *msg)
 {
 	view_cleanup(view);
