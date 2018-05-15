@@ -31,6 +31,12 @@ make ncurses-config
 make
 ------
 
+== Design
+
+The code follows an MVP design pattern. The model is provided by
+`world.c`. The view is provided by `sdl-view.c` and `term-view.c`. The
+presenter is provided by `game-engine.c` and `main.c`
+
 == Credits
 
   * The tiles are from https://github.com/borgar/sokoban-skins
