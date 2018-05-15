@@ -1,0 +1,24 @@
+= Sokoban
+
+== Build
+
+The graphical version requires SDL 1.2 development headers. To build
+the graphical version:
+
+------
+make sdl-config
+make
+------
+
+The terminal version requires ncurses. To build the terminal version:
+
+------
+make ncurses-config
+make
+------
+
+== Credits
+
+  * The tiles are from https://github.com/borgar/sokoban-skins
+  * The logging library is from https://github.com/rxi/log.cx
+  * Level file from, Magic Pearls collection at http://www.sourcecode.se/sokoban/levels
