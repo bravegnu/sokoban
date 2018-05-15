@@ -21,13 +21,13 @@ bool view_init(struct view *view)
 {
 	int i;
 	WINDOW *win;
-	
+
 	win = initscr();
 	if (win == NULL) {
 		log_error("error initializing ncurses\n");
 		return false;
 	}
-	
+
 	raw();
 	noecho();
 	keypad(win, true);
@@ -43,7 +43,7 @@ bool view_init(struct view *view)
 		/* Pair numbering starts from 1. */
 		init_pair(i + 1, tile_map[i].color, COLOR_BLACK);
 	}
-	
+
 	return true;
 }
 
@@ -79,16 +79,16 @@ void view_draw(struct view *view, struct world *world)
 	for (row = 0; row < WORLD_MAX_ROWS; row++) {
 		for (col = 0; col < WORLD_MAX_COLS; col++) {
 			int tile = world_get(world, row, col);
-				
+
 			if (tile & WORLD_TILE_WALL)
 				view_draw_tile(view, row, col, VIEW_TILE_WALL);
-			
+
 			else if (tile & WORLD_TILE_WORKER)
 				view_draw_tile(view, row, col, VIEW_TILE_WORKER);
 
 			else if ((tile & WORLD_TILE_BOX) && (tile & WORLD_TILE_DOCK))
 				view_draw_tile(view, row, col, VIEW_TILE_BOX_DOCKED);
-			
+
 			else if (tile & WORLD_TILE_BOX)
 				view_draw_tile(view, row, col, VIEW_TILE_BOX);
 

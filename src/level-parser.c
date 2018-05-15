@@ -32,7 +32,8 @@ static bool lp_level_is_valid(struct level_parser *parser)
  * Updates parser and world state accordingly. Returns true if the
  * parsing was successful, false otherwise.
  */
-static bool lp_parse_col(struct level_parser *parser, char ch, struct world *world)
+static bool lp_parse_col(struct level_parser *parser, char ch,
+			 struct world *world)
 {
 	char *tile;
 	bool valid;
@@ -104,13 +105,14 @@ static bool is_comment(char *line)
  * Updates parser and world state accordingly. Returns true if the
  * parsing was successful, false otherwise.
  */
-static bool lp_parse_row(struct level_parser *parser, char *line, struct world *world)
+static bool lp_parse_row(struct level_parser *parser, char *line,
+			 struct world *world)
 {
 	int i;
 
 	for (i = 0; line[i] != '\0'; i++) {
 		bool passed;
-		
+
 		if (is_end_of_row(line[i])) {
 			if (parser->curr_col > world->ncols)
 				world->ncols = parser->curr_col;
@@ -149,7 +151,7 @@ bool lp_open(struct level_parser *parser)
 static void lp_init_level(struct level_parser *parser, struct world *world)
 {
 	world_init(world);
-	
+
 	parser->curr_row = 0;
 	parser->curr_col = 0;
 	parser->done = false;
@@ -166,18 +168,21 @@ static void lp_init_level(struct level_parser *parser, struct world *world)
  * Skips comments. Handles EOF and errors. Returns true on success,
  * false otherwise.
  */
-static bool lp_do_line(struct level_parser *parser, char *line, struct world *world)
+static bool lp_do_line(struct level_parser *parser, char *line,
+		       struct world *world)
 {
 	bool passed;
 
 	if (line == NULL) {
 		if (ferror(parser->fp)) {
-			log_error("error reading from file: %s", strerror(errno));
+			log_error("error reading from file: %s",
+				  strerror(errno));
 			return false;
 		}
 
 		if (parser->curr_row != 0) {
-			log_error("unexpected EOF, parsing file: %s", strerror(errno));
+			log_error("unexpected EOF, parsing file: %s",
+				  strerror(errno));
 			return false;
 		}
 
@@ -213,7 +218,7 @@ bool lp_next(struct level_parser *parser, struct world *world)
 	char line[64];
 	char *retp;
 	bool passed;
-	
+
 	lp_init_level(parser, world);
 
 	while (1) {

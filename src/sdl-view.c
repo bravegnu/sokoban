@@ -27,7 +27,7 @@ bool view_init(struct view *view)
 		log_error("initializing SDL failed: %s", SDL_GetError());
 		return false;
 	}
-	
+
 	for (i = 0; i < VIEW_TILE_MAX; i++) {
 		view->tile_surfaces[i] = SDL_LoadBMP(tile_files[i]);
 		if (view->tile_surfaces[i] == NULL) {
@@ -60,12 +60,12 @@ static void view_draw_tile(struct view *view, int row, int col, int tile)
 	window_rect.y = row * TILE_SIZE;
 	window_rect.w = TILE_SIZE;
 	window_rect.h = TILE_SIZE;
-	
+
 	ret = SDL_BlitSurface(view->tile_surfaces[tile],
 			      NULL,
 			      view->window,
 			      &window_rect);
-	assert (ret != -1);
+	assert(ret != -1);
 }
 
 bool view_new_level(struct view *view, struct world *world)
@@ -105,10 +105,10 @@ void view_draw(struct view *view, struct world *world)
 
 			if (tile & WORLD_TILE_WALL)
 				view_draw_tile(view, row, col, VIEW_TILE_WALL);
-			
+
 			else if (tile & WORLD_TILE_WORKER)
 				view_draw_tile(view, row, col, VIEW_TILE_WORKER);
-			
+
 			else if ((tile & WORLD_TILE_BOX) && (tile & WORLD_TILE_DOCK))
 				view_draw_tile(view, row, col, VIEW_TILE_BOX_DOCKED);
 

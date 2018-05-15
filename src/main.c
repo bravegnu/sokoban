@@ -15,7 +15,7 @@ static bool play_level(struct view *view, struct world *world_init)
 
 	world_copy(world_init, &world);
 	view_new_level(view, &world);
-	
+
 	while (!ge_is_game_over(&world)) {
 		enum view_key key = view_get_key(view);
 
@@ -44,7 +44,7 @@ static bool play_level(struct view *view, struct world *world_init)
 
 		view_draw(view, &world);
 	}
-	
+
 	return true;
 }
 
@@ -54,7 +54,7 @@ static void panic(struct view *view, char *msg)
 	error(1, 0, "%s: see game.log for more details", msg);
 }
 
-int main()
+int main(void)
 {
 	int ret;
 	bool passed;
@@ -66,13 +66,13 @@ int main()
 	log_fp = fopen("game.log", "w");
 	if (log_fp == NULL)
 		error(1, errno, "error opening game log file");
-	
+
 	log_set_fp(log_fp);
 
 	passed = view_init(&view);
 	if (!passed)
 		panic(&view, "view initialization failed");
-	
+
 	lp_init(&parser, "levels.txt");
 
 	passed = lp_open(&parser);
@@ -89,8 +89,8 @@ int main()
 
 		if (!play_level(&view, &world))
 			break;
-		else
-			sleep(1);
+
+		sleep(1);
 	}
 
 	passed = lp_close(&parser);

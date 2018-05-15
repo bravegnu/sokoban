@@ -24,19 +24,19 @@ void world_dump(struct world *world)
 	for (row = 0; row < world->nrows; row++) {
 		for (col = 0; col < world->ncols; col++) {
 			char tile = world->tiles[row][col];
-			
+
 			if (tile & WORLD_TILE_WALL)
 				putchar('#');
-			
+
 			else if (tile & WORLD_TILE_WORKER)
 				putchar('@');
-			
+
 			else if (tile & WORLD_TILE_DOCK)
 				putchar('.');
-			
+
 			else if (tile & WORLD_TILE_BOX)
 				putchar('$');
-			
+
 			else
 				putchar(' ');
 		}

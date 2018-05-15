@@ -52,7 +52,7 @@ void ge_move(enum ge_dir dir, struct world *world)
 
 		world_push_box(world, next_row, next_col, push_row, push_col);
 	}
-		
+
 	world_move_worker(world, next_row, next_col);
 }
 
