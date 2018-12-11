@@ -1,30 +1,24 @@
 CPPFLAGS = -DLOG_USE_COLOR
 objs = src/main.o src/game-engine.o src/level-parser.o src/world.o src/log.o
 
--include .config
+# SDL Options
 
-all: check-config src/main
+LDLIBS += -L/usr/lib/x86_64-linux-gnu -lSDL
+CPPFLAGS += -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
+objs += src/sdl-view.o
+
+# ncurses Options
+
+objs += src/term-view.o
+LDLIBS += -lncurses
+
+all: src/main
 	cp src/main sokoban
-
-help:
-	@echo 'Usage:'
-	@echo '    $ make sdl-config or make ncurses-config'
-	@echo '    $ make'
 
 src/main: $(objs)
 
-check-config:
-	@test -e ".config" || (echo "*** Source tree not configured! ***"; exit 1)
-
-sdl-config:
-	cp configs/sdl.config .config
-
-ncurses-config:
-	cp configs/ncurses.config .config
-
 distclean: clean
 	find . -name *~ -delete
-	rm -f .config
 	rm -f game.log
 
 clean:

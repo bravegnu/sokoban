@@ -1,6 +1,7 @@
 #include "world.h"
 #include "view.h"
 #include "log.h"
+#include "term-view.h"
 
 #include <ncurses.h>
 
@@ -17,10 +18,88 @@ static struct {
 	[VIEW_TILE_WORKER] = { '$', COLOR_YELLOW, true },
 };
 
-bool view_init(struct view *view)
+void term_view_cleanup(struct view *view)
+{
+	endwin();
+}
+
+static void term_view_draw_tile(struct view *view, int row, int col, int tile)
+{
+	attron(COLOR_PAIR(tile + 1));
+	if (tile_map[tile].bold)
+		attron(A_BOLD);
+
+	mvaddch(row, col, tile_map[tile].ch);
+
+	attroff(COLOR_PAIR(tile + 1));
+	attroff(A_BOLD);
+}
+
+void term_view_draw(struct view *view, struct world *world)
+{
+	int row;
+	int col;
+
+	clear();
+
+	for (row = 0; row < WORLD_MAX_ROWS; row++) {
+		for (col = 0; col < WORLD_MAX_COLS; col++) {
+			int tile = world_get(world, row, col);
+
+			if (tile & WORLD_TILE_WALL)
+				term_view_draw_tile(view, row, col, VIEW_TILE_WALL);
+
+			else if (tile & WORLD_TILE_WORKER)
+				term_view_draw_tile(view, row, col, VIEW_TILE_WORKER);
+
+			else if ((tile & WORLD_TILE_BOX) && (tile & WORLD_TILE_DOCK))
+				term_view_draw_tile(view, row, col, VIEW_TILE_BOX_DOCKED);
+
+			else if (tile & WORLD_TILE_BOX)
+				term_view_draw_tile(view, row, col, VIEW_TILE_BOX);
+
+			else if (tile & WORLD_TILE_DOCK)
+				term_view_draw_tile(view, row, col, VIEW_TILE_DOCK);
+		}
+	}
+
+	refresh();
+}
+
+bool term_view_new_level(struct view *view, struct world *world)
+{
+	term_view_draw(view, world);
+}
+
+enum view_key term_view_get_key(struct view *view)
+{
+	int key = getch();
+
+	switch (key) {
+	case KEY_UP:
+		return VIEW_KEY_UP;
+	case KEY_DOWN:
+		return VIEW_KEY_DOWN;
+	case KEY_LEFT:
+		return VIEW_KEY_LEFT;
+	case KEY_RIGHT:
+		return VIEW_KEY_RIGHT;
+	case 's':
+		return VIEW_KEY_SKIP;
+	case 'r':
+		return VIEW_KEY_RESTART;
+	case 'q':
+		return VIEW_KEY_QUIT;
+	default:
+		return VIEW_KEY_NONE;
+	}
+}
+
+bool term_view_init(struct term_view *term_view)
 {
 	int i;
 	WINDOW *win;
+	struct view *view = VIEW(term_view);
 
 	win = initscr();
 	if (win == NULL) {
@@ -44,82 +123,10 @@ bool view_init(struct view *view)
 		init_pair(i + 1, tile_map[i].color, COLOR_BLACK);
 	}
 
+	view->cleanup = term_view_cleanup;
+	view->draw = term_view_draw;
+	view->get_key = term_view_get_key;
+	view->new_level = term_view_new_level;
+
 	return true;
-}
-
-void view_cleanup(struct view *view)
-{
-	endwin();
-}
-
-bool view_new_level(struct view *view, struct world *world)
-{
-	view_draw(view, world);
-}
-
-static void view_draw_tile(struct view *view, int row, int col, int tile)
-{
-	attron(COLOR_PAIR(tile + 1));
-	if (tile_map[tile].bold)
-		attron(A_BOLD);
-
-	mvaddch(row, col, tile_map[tile].ch);
-
-	attroff(COLOR_PAIR(tile + 1));
-	attroff(A_BOLD);
-}
-
-void view_draw(struct view *view, struct world *world)
-{
-	int row;
-	int col;
-
-	clear();
-
-	for (row = 0; row < WORLD_MAX_ROWS; row++) {
-		for (col = 0; col < WORLD_MAX_COLS; col++) {
-			int tile = world_get(world, row, col);
-
-			if (tile & WORLD_TILE_WALL)
-				view_draw_tile(view, row, col, VIEW_TILE_WALL);
-
-			else if (tile & WORLD_TILE_WORKER)
-				view_draw_tile(view, row, col, VIEW_TILE_WORKER);
-
-			else if ((tile & WORLD_TILE_BOX) && (tile & WORLD_TILE_DOCK))
-				view_draw_tile(view, row, col, VIEW_TILE_BOX_DOCKED);
-
-			else if (tile & WORLD_TILE_BOX)
-				view_draw_tile(view, row, col, VIEW_TILE_BOX);
-
-			else if (tile & WORLD_TILE_DOCK)
-				view_draw_tile(view, row, col, VIEW_TILE_DOCK);
-		}
-	}
-
-	refresh();
-}
-
-enum view_key view_get_key(struct view *view)
-{
-	int key = getch();
-
-	switch (key) {
-	case KEY_UP:
-		return VIEW_KEY_UP;
-	case KEY_DOWN:
-		return VIEW_KEY_DOWN;
-	case KEY_LEFT:
-		return VIEW_KEY_LEFT;
-	case KEY_RIGHT:
-		return VIEW_KEY_RIGHT;
-	case 's':
-		return VIEW_KEY_SKIP;
-	case 'r':
-		return VIEW_KEY_RESTART;
-	case 'q':
-		return VIEW_KEY_QUIT;
-	default:
-		return VIEW_KEY_NONE;
-	}
 }
