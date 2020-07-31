@@ -37,6 +37,8 @@ bool view_init(struct view *view)
 		}
 	}
 
+	view->window = NULL;
+
 	return true;
 }
 
