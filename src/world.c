@@ -1,5 +1,7 @@
 #include "world.h"
 
+#include <stdio.h>
+
 void world_init(struct world *world)
 {
 	int row;
