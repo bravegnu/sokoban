@@ -2,6 +2,7 @@
 #include "game-engine.h"
 #include "world.h"
 #include "view.h"
+#include "log.h"
 
 #include <unistd.h>
 
